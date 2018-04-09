@@ -1,4 +1,5 @@
-// Package appr holds the client code required to interact with a CNR backend.
+// Package apprclient holds the client code required to interact with a CNR
+// backend.
 package apprclient
 
 import (
@@ -39,14 +40,14 @@ func New(config Config) (*Client, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Fs must not be empty", config)
 	}
 	if config.Logger == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.logger must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
 	if config.Address == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.address must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Address must not be empty", config)
 	}
 	if config.Organization == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.organization must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Organization must not be empty", config)
 	}
 
 	base, err := url.Parse(config.Address + "/cnr/api/v1/")
