@@ -26,6 +26,10 @@
 
 
 [[constraint]]
+  version = "^1.1.0"
+  name = "github.com/cenkalti/backoff"
+
+[[constraint]]
   branch = "master"
   name = "github.com/giantswarm/e2e-harness"
 

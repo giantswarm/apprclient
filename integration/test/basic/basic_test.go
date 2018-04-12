@@ -3,10 +3,17 @@
 package basic
 
 import (
+	"fmt"
+	"log"
+	"net/http"
 	"strconv"
 	"testing"
+	"time"
 
+	"github.com/cenkalti/backoff"
+	"github.com/giantswarm/e2e-harness/pkg/framework"
 	"github.com/giantswarm/k8sportforward"
+	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/afero"
 
@@ -43,11 +50,17 @@ func Test_Client_GetReleaseVersion(t *testing.T) {
 		t.Fatalf("could not create tunnel %v", err)
 	}
 
+	serverAddress := "http://localhost:" + strconv.Itoa(tunnel.Local)
+	err = waitForServer(f, serverAddress+"/cnr/api/v1/packages")
+	if err != nil {
+		t.Fatalf("server didn't come up on time")
+	}
+
 	c := apprclient.Config{
 		Fs:     afero.NewOsFs(),
 		Logger: l,
 
-		Address:      "http://localhost:" + strconv.Itoa(tunnel.Local),
+		Address:      serverAddress,
 		Organization: "giantswarm",
 	}
 
@@ -75,4 +88,26 @@ func Test_Client_GetReleaseVersion(t *testing.T) {
 	if expected != actual {
 		t.Fatalf("release didn't match expected, want %q, got %q", expected, actual)
 	}
+}
+
+func waitForServer(f *framework.Host, url string) error {
+	var err error
+
+	operation := func() error {
+		_, err := http.Get(url)
+		if err != nil {
+			return fmt.Errorf("could not retrieve %s: %v", url, err)
+		}
+		return nil
+	}
+
+	notify := func(err error, t time.Duration) {
+		log.Printf("waiting for server at %s: %v", t, err)
+	}
+
+	err = backoff.RetryNotify(operation, backoff.NewExponentialBackOff(), notify)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	return nil
 }
