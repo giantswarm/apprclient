@@ -23,6 +23,10 @@ type Payload struct {
 	Blob      string `json:"blob"`
 }
 
+type Response struct {
+	Status string `json:"status"`
+}
+
 // Config represents the configuration used to create a appr client.
 type Config struct {
 	Fs     afero.Fs
@@ -143,9 +147,7 @@ func (c *Client) PushChartTarball(name, release, tarballPath string) error {
 		return microerror.Mask(err)
 	}
 
-	var r struct {
-		Status string `json:"status"`
-	}
+	var r Response
 	_, err = c.do(req, &r)
 	if err != nil {
 		return microerror.Mask(err)
@@ -171,6 +173,28 @@ func (c *Client) PromoteChart(name, release, channel string) error {
 	_, err = c.do(req, ch)
 	if err != nil {
 		return microerror.Mask(err)
+	}
+
+	return nil
+}
+
+// DeleteRelease removes a release from the server.
+func (c *Client) DeleteRelease(name, release string) error {
+	p := path.Join("packages", c.organization, name, release, "helm")
+
+	req, err := c.newRequest("DELETE", p)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	var r Response
+	_, err = c.do(req, &r)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	if r.Status != deletedStatus {
+		return microerror.Mask(unknownStatusError)
 	}
 
 	return nil

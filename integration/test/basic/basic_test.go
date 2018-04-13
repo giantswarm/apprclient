@@ -20,7 +20,7 @@ import (
 	"github.com/giantswarm/apprclient"
 )
 
-func Test_Client_GetReleaseVersion(t *testing.T) {
+func test_setup(t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
 	l, err := micrologger.New(micrologger.Config{})
 	if err != nil {
 		t.Fatalf("could not create logger %v", err)
@@ -68,6 +68,23 @@ func Test_Client_GetReleaseVersion(t *testing.T) {
 	if err != nil {
 		t.Fatalf("could not create appr %v", err)
 	}
+	return a, tunnel
+}
+
+func test_teardown(a *apprclient.Client, tunnel *k8sportforward.Tunnel, t *testing.T) {
+	err := a.DeleteRelease("tb-chart", "5.5.5")
+	if err != nil {
+		t.Fatalf("could not delete release %v", err)
+	}
+
+	tunnel.Close()
+}
+
+func Test_Client_GetReleaseVersion(t *testing.T) {
+	var err error
+
+	a, tunnel := test_setup(t)
+	defer test_teardown(a, tunnel, t)
 
 	err = a.PushChartTarball("tb-chart", "5.5.5", "/e2e/fixtures/tb-chart.tar.gz")
 	if err != nil {
