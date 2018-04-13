@@ -84,6 +84,28 @@ func New(config Config) (*Client, error) {
 	return c, nil
 }
 
+// DeleteRelease removes a release from the server.
+func (c *Client) DeleteRelease(name, release string) error {
+	p := path.Join("packages", c.organization, name, release, "helm")
+
+	req, err := c.newRequest("DELETE", p)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	var r Response
+	_, err = c.do(req, &r)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	if r.Status != deletedStatus {
+		return microerror.Mask(unknownStatusError)
+	}
+
+	return nil
+}
+
 // GetReleaseVersion queries CNR for the release version of the chart
 // represented by the given name and channel.
 func (c *Client) GetReleaseVersion(name, channel string) (string, error) {
@@ -102,6 +124,24 @@ func (c *Client) GetReleaseVersion(name, channel string) (string, error) {
 	}
 
 	return ch.Current, nil
+}
+
+// PromoteChart puts a release of the given chart in a channel.
+func (c *Client) PromoteChart(name, release, channel string) error {
+	p := path.Join("packages", c.organization, name, "channels", channel, release)
+
+	req, err := c.newRequest("POST", p)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	ch := &Channel{}
+	_, err = c.do(req, ch)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
 }
 
 // PullChartTarball downloads a tarball with the chart described by the given
@@ -154,46 +194,6 @@ func (c *Client) PushChartTarball(name, release, tarballPath string) error {
 	}
 
 	if r.Status != okStauts {
-		return microerror.Mask(unknownStatusError)
-	}
-
-	return nil
-}
-
-// PromoteChart puts a release of the given chart in a channel.
-func (c *Client) PromoteChart(name, release, channel string) error {
-	p := path.Join("packages", c.organization, name, "channels", channel, release)
-
-	req, err := c.newRequest("POST", p)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	ch := &Channel{}
-	_, err = c.do(req, ch)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	return nil
-}
-
-// DeleteRelease removes a release from the server.
-func (c *Client) DeleteRelease(name, release string) error {
-	p := path.Join("packages", c.organization, name, release, "helm")
-
-	req, err := c.newRequest("DELETE", p)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	var r Response
-	_, err = c.do(req, &r)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	if r.Status != deletedStatus {
 		return microerror.Mask(unknownStatusError)
 	}
 
