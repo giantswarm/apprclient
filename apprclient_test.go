@@ -164,7 +164,7 @@ func Test_PullTarball(t *testing.T) {
 				t.Errorf("could not create appr %v", err)
 			}
 
-			path, err := a.PullChartTarball(name, channel)
+			path, err := a.PullChartTarballFromChannel(name, channel)
 			switch {
 			case err != nil && !tc.expectedError:
 				t.Errorf("failed to get release %v", err)
