@@ -26,7 +26,7 @@ func test_setup(t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
 		t.Fatalf("could not create logger %v", err)
 	}
 
-	restCfg := f.RestConfig()
+	restCfg := h.RestConfig()
 	fwc := k8sportforward.Config{
 		RestConfig: restCfg,
 	}
@@ -36,7 +36,7 @@ func test_setup(t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
 		t.Fatalf("could not create forwarder %v", err)
 	}
 
-	podName, err := f.GetPodName("default", "app=cnr-server")
+	podName, err := h.GetPodName("default", "app=cnr-server")
 	if err != nil {
 		t.Fatalf("could not get cnr-server pod name %v", err)
 	}
@@ -51,7 +51,7 @@ func test_setup(t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
 	}
 
 	serverAddress := "http://localhost:" + strconv.Itoa(tunnel.Local)
-	err = waitForServer(f, serverAddress+"/cnr/api/v1/packages")
+	err = waitForServer(h, serverAddress+"/cnr/api/v1/packages")
 	if err != nil {
 		t.Fatalf("server didn't come up on time")
 	}
@@ -107,7 +107,7 @@ func Test_Client_GetReleaseVersion(t *testing.T) {
 	}
 }
 
-func waitForServer(f *framework.Host, url string) error {
+func waitForServer(h *framework.Host, url string) error {
 	var err error
 
 	operation := func() error {
