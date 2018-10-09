@@ -26,25 +26,8 @@
 
 
 [[constraint]]
-  version = "^2.0.0"
   name = "github.com/cenkalti/backoff"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/e2e-harness"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/k8sportforward"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/microerror"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/micrologger"
-
+  version = "2.0.0"
 
 [prune]
   go-tests = true
