@@ -5,10 +5,9 @@ package basic
 import (
 	"testing"
 
+	"github.com/giantswarm/apprclient/integration/setup"
 	"github.com/giantswarm/e2e-harness/pkg/framework"
 	"github.com/giantswarm/micrologger"
-
-	"github.com/giantswarm/apprclient/integration/setup"
 )
 
 var (

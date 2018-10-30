@@ -6,51 +6,50 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"testing"
 	"time"
 
 	"github.com/cenkalti/backoff"
+	"github.com/giantswarm/apprclient"
 	"github.com/giantswarm/e2e-harness/pkg/framework"
 	"github.com/giantswarm/k8sportforward"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/afero"
-
-	"github.com/giantswarm/apprclient"
 )
 
 func test_setup(t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
+	var err error
+
 	l, err := micrologger.New(micrologger.Config{})
 	if err != nil {
 		t.Fatalf("could not create logger %v", err)
 	}
 
-	restCfg := h.RestConfig()
-	fwc := k8sportforward.Config{
-		RestConfig: restCfg,
-	}
+	var fw *k8sportforward.Forwarder
+	{
+		restCfg := h.RestConfig()
 
-	fw, err := k8sportforward.New(fwc)
-	if err != nil {
-		t.Fatalf("could not create forwarder %v", err)
+		c := k8sportforward.ForwarderConfig{
+			RestConfig: restCfg,
+		}
+
+		fw, err = k8sportforward.NewForwarder(c)
+		if err != nil {
+			t.Fatalf("could not create forwarder %v", err)
+		}
 	}
 
 	podName, err := h.GetPodName("default", "app=cnr-server")
 	if err != nil {
 		t.Fatalf("could not get cnr-server pod name %v", err)
 	}
-	tc := k8sportforward.TunnelConfig{
-		Remote:    5000,
-		Namespace: "default",
-		PodName:   podName,
-	}
-	tunnel, err := fw.ForwardPort(tc)
+	tunnel, err := fw.ForwardPort("default", podName, 5000)
 	if err != nil {
 		t.Fatalf("could not create tunnel %v", err)
 	}
 
-	serverAddress := "http://localhost:" + strconv.Itoa(tunnel.Local)
+	serverAddress := tunnel.LocalAddress()
 	err = waitForServer(h, serverAddress+"/cnr/api/v1/packages")
 	if err != nil {
 		t.Fatalf("server didn't come up on time")
