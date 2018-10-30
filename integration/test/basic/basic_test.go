@@ -49,7 +49,7 @@ func test_setup(t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
 		t.Fatalf("could not create tunnel %v", err)
 	}
 
-	serverAddress := tunnel.LocalAddress()
+	serverAddress := "http://" + tunnel.LocalAddress()
 	err = waitForServer(h, serverAddress+"/cnr/api/v1/packages")
 	if err != nil {
 		t.Fatalf("server didn't come up on time")
