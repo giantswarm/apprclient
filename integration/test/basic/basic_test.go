@@ -3,6 +3,7 @@
 package basic
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,7 +19,7 @@ import (
 	"github.com/spf13/afero"
 )
 
-func test_setup(t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
+func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
 	var err error
 
 	l, err := micrologger.New(micrologger.Config{})
@@ -70,8 +71,8 @@ func test_setup(t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
 	return a, tunnel
 }
 
-func test_teardown(a *apprclient.Client, tunnel *k8sportforward.Tunnel, t *testing.T) {
-	err := a.DeleteRelease("tb-chart", "5.5.5")
+func testTeardown(ctx context.Context, a *apprclient.Client, tunnel *k8sportforward.Tunnel, t *testing.T) {
+	err := a.DeleteRelease(ctx, "tb-chart", "5.5.5")
 	if err != nil {
 		t.Fatalf("could not delete release %v", err)
 	}
@@ -82,21 +83,23 @@ func test_teardown(a *apprclient.Client, tunnel *k8sportforward.Tunnel, t *testi
 func Test_Client_GetReleaseVersion(t *testing.T) {
 	var err error
 
-	a, tunnel := test_setup(t)
-	defer test_teardown(a, tunnel, t)
+	ctx := context.Background()
 
-	err = a.PushChartTarball("tb-chart", "5.5.5", "/e2e/fixtures/tb-chart.tar.gz")
+	a, tunnel := testSetup(ctx, t)
+	defer testTeardown(ctx, a, tunnel, t)
+
+	err = a.PushChartTarball(ctx, "tb-chart", "5.5.5", "/e2e/fixtures/tb-chart.tar.gz")
 	if err != nil {
 		t.Fatalf("could not push tarball %v", err)
 	}
 
-	err = a.PromoteChart("tb-chart", "5.5.5", "5-5-beta")
+	err = a.PromoteChart(ctx, "tb-chart", "5.5.5", "5-5-beta")
 	if err != nil {
 		t.Fatalf("could not promote chart %v", err)
 	}
 
 	expected := "5.5.5"
-	actual, err := a.GetReleaseVersion("tb-chart", "5-5-beta")
+	actual, err := a.GetReleaseVersion(ctx, "tb-chart", "5-5-beta")
 	if err != nil {
 		t.Fatalf("could not get release %v", err)
 	}
