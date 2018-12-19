@@ -1,6 +1,7 @@
 package apprclient
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -70,6 +71,8 @@ func Test_GetReleaseVersion(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
+		ctx := context.Background()
+
 		t.Run(tc.description, func(t *testing.T) {
 			ts := httptest.NewServer(http.HandlerFunc(tc.h))
 			defer ts.Close()
@@ -80,7 +83,7 @@ func Test_GetReleaseVersion(t *testing.T) {
 				t.Errorf("could not create appr %v", err)
 			}
 
-			r, err := a.GetReleaseVersion(name, channel)
+			r, err := a.GetReleaseVersion(ctx, name, channel)
 			switch {
 			case err != nil && !tc.expectedError:
 				t.Errorf("failed to get release %v", err)
@@ -155,6 +158,8 @@ func Test_PullTarball(t *testing.T) {
 
 	for _, tc := range tcs {
 		t.Run(tc.description, func(t *testing.T) {
+			ctx := context.Background()
+
 			ts := httptest.NewServer(http.HandlerFunc(tc.h))
 			defer ts.Close()
 
@@ -164,7 +169,7 @@ func Test_PullTarball(t *testing.T) {
 				t.Errorf("could not create appr %v", err)
 			}
 
-			path, err := a.PullChartTarball(name, channel)
+			path, err := a.PullChartTarball(ctx, name, channel)
 			switch {
 			case err != nil && !tc.expectedError:
 				t.Errorf("failed to get release %v", err)
