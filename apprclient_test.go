@@ -34,7 +34,7 @@ func Test_GetReleaseVersion(t *testing.T) {
 					return
 				}
 
-				c := Channel{
+				c := cnrChannel{
 					Current: "3.2.1",
 				}
 				js, err := json.Marshal(c)
@@ -115,7 +115,7 @@ func Test_PullTarball(t *testing.T) {
 			h: func(w http.ResponseWriter, r *http.Request) {
 				// handle get release call
 				if strings.HasPrefix(r.URL.Path, "/cnr/api/v1/packages/giantswarm/chartname/channels/3-2-beta") {
-					c := Channel{
+					c := cnrChannel{
 						Current: "3.2.1",
 					}
 					js, err := json.Marshal(c)
