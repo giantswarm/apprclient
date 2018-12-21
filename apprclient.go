@@ -261,7 +261,7 @@ func (c *Client) do(req *http.Request, v interface{}) error {
 
 		return nil
 	}
-	b := backoff.NewExponential(backoff.TinyMaxWait, backoff.TinyMaxInterval)
+	b := backoff.NewExponential(backoff.ShortMaxWait, backoff.ShortMaxInterval)
 	// Pass context to the public methods.
 	//
 	//	See https://github.com/giantswarm/giantswarm/issues/4449
@@ -310,7 +310,7 @@ func (c *Client) doFile(req *http.Request) (string, error) {
 
 		return nil
 	}
-	b := backoff.NewExponential(backoff.TinyMaxWait, backoff.TinyMaxInterval)
+	b := backoff.NewExponential(backoff.ShortMaxWait, backoff.ShortMaxInterval)
 	// Pass context to the public methods.
 	//
 	//	See https://github.com/giantswarm/giantswarm/issues/4449
