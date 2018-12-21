@@ -30,7 +30,7 @@
   name = "github.com/cenkalti/backoff"
 
 [[constraint]]
-  branch = "master"
+  branch = "nodesReady"
   name = "github.com/giantswarm/e2e-harness"
 
 [[constraint]]
