@@ -17,13 +17,13 @@ type Client struct {
 	defaultReleaseVersion string
 }
 
-func New(config Config) (apprclient.Interface, error) {
+func New(config Config) apprclient.Interface {
 	c := &Client{
 		defaultError:          config.DefaultError,
 		defaultReleaseVersion: config.DefaultReleaseVersion,
 	}
 
-	return c, nil
+	return c
 }
 
 func (c *Client) DeleteRelease(ctx context.Context, name, release string) error {
