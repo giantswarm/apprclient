@@ -80,7 +80,7 @@ func installResources(ctx context.Context, config Config) error {
 			},
 		}
 
-		_, err := config.CPK8sClients.AppsV1().Deployments(metav1.NamespaceDefault).Create(deployment)
+		_, err := config.CPK8sClients.K8sClient().AppsV1().Deployments(metav1.NamespaceDefault).Create(deployment)
 		if apierrors.IsAlreadyExists(err) {
 			// fall through
 		} else if err != nil {
@@ -116,7 +116,7 @@ func installResources(ctx context.Context, config Config) error {
 			},
 		}
 
-		_, err := config.CPK8sClients.CoreV1().Services(metav1.NamespaceDefault).Create(service)
+		_, err := config.CPK8sClients.K8sClient().CoreV1().Services(metav1.NamespaceDefault).Create(service)
 		if apierrors.IsAlreadyExists(err) {
 			// fall through
 		} else if err != nil {

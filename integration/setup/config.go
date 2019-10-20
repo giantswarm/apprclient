@@ -3,6 +3,7 @@
 package setup
 
 import (
+	"github.com/giantswarm/e2esetup/k8s"
 	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -56,7 +57,7 @@ func NewConfig() (Config, error) {
 
 		k8sSetup, err = k8s.NewSetup(c)
 		if err != nil {
-			return 1, microerror.Mask(err)
+			return Config{}, microerror.Mask(err)
 		}
 	}
 
