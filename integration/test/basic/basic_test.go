@@ -10,29 +10,22 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cenkalti/backoff"
+	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/apprclient"
-	"github.com/giantswarm/e2e-harness/pkg/framework"
 	"github.com/giantswarm/k8sportforward"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/afero"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
 	var err error
 
-	l, err := micrologger.New(micrologger.Config{})
-	if err != nil {
-		t.Fatalf("could not create logger %v", err)
-	}
-
 	var fw *k8sportforward.Forwarder
 	{
-		restCfg := h.RestConfig()
-
 		c := k8sportforward.ForwarderConfig{
-			RestConfig: restCfg,
+			RestConfig: setup.K8sClients.RESTConfig(),
 		}
 
 		fw, err = k8sportforward.NewForwarder(c)
@@ -41,24 +34,39 @@ func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportf
 		}
 	}
 
-	podName, err := h.GetPodName("default", "app=cnr-server")
-	if err != nil {
-		t.Fatalf("could not get cnr-server pod name %v", err)
+	var podName string
+	{
+		lo := metav1.ListOptions{
+			LabelSelector: "app=cnr-server",
+		}
+		pods, err := setup.CPK8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
+		if err != nil {
+			t.Fatalf("could not list pods %v", err)
+		}
+		if len(pods.Items) != 1 {
+			t.Fatalf("expected 1 pod got %d", len(pods.Items))
+		}
+
+		podName = pods.Items[0].Name
 	}
-	tunnel, err := fw.ForwardPort("default", podName, 5000)
-	if err != nil {
-		t.Fatalf("could not create tunnel %v", err)
+
+	var tunnel *k8sportforward.Tunnel
+	{
+		tunnel, err = fw.ForwardPort("default", podName, 5000)
+		if err != nil {
+			t.Fatalf("could not create tunnel %v", err)
+		}
 	}
 
 	serverAddress := "http://" + tunnel.LocalAddress()
-	err = waitForServer(h, serverAddress+"/cnr/api/v1/packages")
+	err = waitForServer(serverAddress + "/cnr/api/v1/packages")
 	if err != nil {
 		t.Fatalf("server didn't come up on time")
 	}
 
 	c := apprclient.Config{
 		Fs:     afero.NewOsFs(),
-		Logger: l,
+		Logger: config.Logger,
 
 		Address:      serverAddress,
 		Organization: "giantswarm",
@@ -68,6 +76,7 @@ func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportf
 	if err != nil {
 		t.Fatalf("could not create appr %v", err)
 	}
+
 	return a, tunnel
 }
 
@@ -81,9 +90,8 @@ func testTeardown(ctx context.Context, a *apprclient.Client, tunnel *k8sportforw
 }
 
 func Test_Client_GetReleaseVersion(t *testing.T) {
-	var err error
-
 	ctx := context.Background()
+	var err error
 
 	a, tunnel := testSetup(ctx, t)
 	defer testTeardown(ctx, a, tunnel, t)
@@ -109,7 +117,7 @@ func Test_Client_GetReleaseVersion(t *testing.T) {
 	}
 }
 
-func waitForServer(h *framework.Host, url string) error {
+func waitForServer(url string) error {
 	var err error
 
 	operation := func() error {
