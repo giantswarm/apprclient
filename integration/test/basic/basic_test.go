@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/apprclient"
+	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8sportforward"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
