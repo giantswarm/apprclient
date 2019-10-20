@@ -24,7 +24,7 @@ func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportf
 	var fw *k8sportforward.Forwarder
 	{
 		c := k8sportforward.ForwarderConfig{
-			RestConfig: config.K8sClients.RESTConfig(),
+			RestConfig: config.CPK8sClients.RESTConfig(),
 		}
 
 		fw, err = k8sportforward.NewForwarder(c)
@@ -38,7 +38,7 @@ func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportf
 		lo := metav1.ListOptions{
 			LabelSelector: "app=cnr-server",
 		}
-		pods, err := config.CPK8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
+		pods, err := config.CPK8sClients.K8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
 		if err != nil {
 			t.Fatalf("could not list pods %v", err)
 		}
