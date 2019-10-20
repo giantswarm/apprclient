@@ -63,6 +63,7 @@ func installResources(ctx context.Context, config Config) error {
 				Replicas: &replicas,
 				Template: corev1.PodTemplateSpec{
 					ObjectMeta: metav1.ObjectMeta{
+						Name: "cnr-server",
 						Labels: map[string]string{
 							"app": "cnr-server",
 						},
