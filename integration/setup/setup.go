@@ -3,23 +3,27 @@
 package setup
 
 import (
-	"log"
+	"context"
+	"fmt"
 	"os"
 	"testing"
 
-	"github.com/giantswarm/e2e-harness/pkg/framework"
 	"github.com/giantswarm/microerror"
-
-	"github.com/giantswarm/apprclient/integration/teardown"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func WrapTestMain(f *framework.Host, m *testing.M) {
+func Setup(m *testing.M, config Config) {
+	ctx := context.Background()
+
 	var v int
 	var err error
 
-	err = resources(f)
+	err = installResources(ctx, config)
 	if err != nil {
-		log.Printf("%#v\n", err)
+		config.Logger.LogCtx(ctx, "level", "error", "message", "failed to install resources", "stack", fmt.Sprintf("%#v", err))
 		v = 1
 	}
 
@@ -27,19 +31,97 @@ func WrapTestMain(f *framework.Host, m *testing.M) {
 		v = m.Run()
 	}
 
-	err = teardown.Teardown(f)
-	if err != nil {
-		log.Printf("%#v\n", err)
-		v = 1
-	}
-
 	os.Exit(v)
 }
 
-func resources(f *framework.Host) error {
-	err := framework.HelmCmd("registry install --wait quay.io/giantswarm/cnr-server-chart:stable -- -n cnr-server")
-	if err != nil {
-		return microerror.Mask(err)
+func installResources(ctx context.Context, config Config) error {
+	var err error
+
+	{
+		err = config.K8s.EnsureNamespaceCreated(ctx, "giantswarm")
+		if err != nil {
+			return microerror.Mask(err)
+		}
+	}
+
+	{
+		replicas := int32(1)
+		deployment := appsv1.Deployment{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "cnr-server",
+				Namespace: metav1.NamespaceDefault,
+				Labels: map[string]string{
+					"app": "cnr-server",
+				},
+			},
+			Spec: appsv1.DeploymentSpec{
+				Selector: &metav1.LabelSelector{
+					MatchLabels: map[string]string{
+						"app": "cnr-server",
+					},
+				},
+				Replicas: &replicas,
+				Template: corev1.PodTemplateSpec{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							"app": "cnr-server",
+						},
+					},
+					Spec: corev1.PodSpec{
+						Containers: []corev1.Container{
+							{
+								Name:            "cnr-server",
+								Image:           "quay.io/giantswarm/cnr-server:latest",
+								ImagePullPolicy: corev1.PullIfNotPresent,
+							},
+						},
+					},
+				},
+			},
+		}
+
+		_, err := config.CPK8sClients.AppsV1().Deployments(metav1.NamespaceDefault).Create(deployment)
+		if apierrors.IsAlreadyExists(err) {
+			// fall through
+		} else if err != nil {
+			return microerror.Mask(err)
+		}
+	}
+
+	{
+		service := &corev1.Service{
+			TypeMeta: metav1.TypeMeta{
+				Kind:       "service",
+				APIVersion: "v1",
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "cnr-server",
+				Namespace: metav1.NamespaceDefault,
+				Labels: map[string]string{
+					"app": "cnr-server",
+				},
+			},
+			Spec: corev1.ServiceSpec{
+				Type: corev1.ServiceTypeClusterIP,
+				Ports: []corev1.ServicePort{
+					{
+						Name:     "cnr-server",
+						Port:     int32(5000),
+						Protocol: "TCP",
+					},
+				},
+				Selector: map[string]string{
+					"app": "cnr-server",
+				},
+			},
+		}
+
+		_, err := config.CPK8sClients.CoreV1().Services(metav1.NamespaceDefault).Create(service)
+		if apierrors.IsAlreadyExists(err) {
+			// fall through
+		} else if err != nil {
+			return microerror.Mask(err)
+		}
 	}
 
 	return nil
