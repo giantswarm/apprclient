@@ -14,7 +14,6 @@ import (
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8sportforward"
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/micrologger"
 	"github.com/spf13/afero"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,7 +24,7 @@ func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportf
 	var fw *k8sportforward.Forwarder
 	{
 		c := k8sportforward.ForwarderConfig{
-			RestConfig: setup.K8sClients.RESTConfig(),
+			RestConfig: config.K8sClients.RESTConfig(),
 		}
 
 		fw, err = k8sportforward.NewForwarder(c)
@@ -39,7 +38,7 @@ func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportf
 		lo := metav1.ListOptions{
 			LabelSelector: "app=cnr-server",
 		}
-		pods, err := setup.CPK8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
+		pods, err := config.CPK8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
 		if err != nil {
 			t.Fatalf("could not list pods %v", err)
 		}
@@ -132,7 +131,7 @@ func waitForServer(url string) error {
 		log.Printf("waiting for server at %s: %v", t, err)
 	}
 
-	err = backoff.RetryNotify(operation, backoff.NewExponentialBackOff(), notify)
+	err = backoff.RetryNotify(operation, backoff.NewExponential(2*time.Minute, 30*time.Second), notify)
 	if err != nil {
 		return microerror.Mask(err)
 	}
