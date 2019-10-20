@@ -46,7 +46,7 @@ func installResources(ctx context.Context, config Config) error {
 
 	{
 		replicas := int32(1)
-		deployment := appsv1.Deployment{
+		deployment := &appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "cnr-server",
 				Namespace: metav1.NamespaceDefault,
