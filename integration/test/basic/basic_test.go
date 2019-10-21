@@ -134,7 +134,7 @@ func waitForPod() (string, error) {
 		log.Printf("waiting for server at %s: %#v", t, err)
 	}
 
-	err := backoff.RetryNotify(o, backoff.NewExponential(2*time.Minute, 30*time.Second), n)
+	err := backoff.RetryNotify(o, backoff.NewConstant(2*time.Minute, 15*time.Second), n)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
