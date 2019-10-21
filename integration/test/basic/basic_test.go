@@ -35,18 +35,10 @@ func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportf
 
 	var podName string
 	{
-		lo := metav1.ListOptions{
-			LabelSelector: "app=cnr-server",
-		}
-		pods, err := config.CPK8sClients.K8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
+		podName, err = waitForPod()
 		if err != nil {
-			t.Fatalf("could not list pods %v", err)
+			t.Fatalf("could not get cnr-server pod %#v", err)
 		}
-		if len(pods.Items) != 1 {
-			t.Fatalf("expected 1 pod got %d", len(pods.Items))
-		}
-
-		podName = pods.Items[0].Name
 	}
 
 	var tunnel *k8sportforward.Tunnel
@@ -114,6 +106,40 @@ func Test_Client_GetReleaseVersion(t *testing.T) {
 	if expected != actual {
 		t.Fatalf("release didn't match expected, want %q, got %q", expected, actual)
 	}
+}
+
+func waitForPod() (string, error) {
+	var podName string
+
+	o := func() error {
+		lo := metav1.ListOptions{
+			FieldSelector: "status.phase=Running",
+			LabelSelector: "app=cnr-server",
+		}
+		pods, err := config.CPK8sClients.K8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		if len(pods.Items) != 1 {
+			return microerror.Maskf(executionFailedError, "expected 1 pod got %d", len(pods.Items))
+		}
+
+		pod := pods.Items[0]
+		podName = pod.Name
+
+		return nil
+	}
+
+	n := func(err error, t time.Duration) {
+		log.Printf("waiting for server at %s: %#v", t, err)
+	}
+
+	err := backoff.RetryNotify(o, backoff.NewExponential(2*time.Minute, 30*time.Second), n)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	return podName, nil
 }
 
 func waitForServer(url string) error {
