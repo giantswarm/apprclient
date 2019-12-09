@@ -75,22 +75,14 @@
 
 [[projects]]
   branch = "master"
-<<<<<<< HEAD
   digest = "1:ca9ad5887021e13fca3a1aa33a58668a0061b3a03bd7dfc2d36c38dedf56f572"
-=======
-  digest = "1:e4d78572f2a3bee23e41c567dd82fc22018c8f0d736aa376d8db86448f43a7db"
->>>>>>> master
   name = "github.com/giantswarm/k8sclient"
   packages = [
     ".",
     "k8scrdclient",
   ]
   pruneopts = "UT"
-<<<<<<< HEAD
   revision = "6cb127468cd6b30eaf8030b875f796e34b481938"
-=======
-  revision = "059a94fd04e59aceab384413cf9608ae1640a2ca"
->>>>>>> master
 
 [[projects]]
   branch = "master"
