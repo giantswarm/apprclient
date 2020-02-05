@@ -69,12 +69,8 @@ github.com/giantswarm/k8sclient v0.0.0-20191209120459-6cb127468cd6 h1:vr+QDUGxyr
 github.com/giantswarm/k8sclient v0.0.0-20191209120459-6cb127468cd6/go.mod h1:XH0Ea+GvJOStcuamQyFSJXIQasGcPpHnWnHQVyG7AJc=
 github.com/giantswarm/k8sportforward v0.0.0-20191209104600-676e7106283c h1:aOeewMGIxyEZDTbVNDhuwzwzzb8m8ziidC0uH4EPtpY=
 github.com/giantswarm/k8sportforward v0.0.0-20191209104600-676e7106283c/go.mod h1:zmkvHSUauFv31WnGl67dEC5zy9CE72KEd/mQ23DvmkU=
-github.com/giantswarm/microerror v0.1.1-0.20200204123133-8f12df8fee02 h1:ysrMgNgVhyPy0+wnAc/136jo1IDLZzWQeCz033vLTZk=
-github.com/giantswarm/microerror v0.1.1-0.20200204123133-8f12df8fee02/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
 github.com/giantswarm/microerror v0.1.1-0.20200205143715-01b76f66cae6 h1:lJr756ZiXB9+n9pCUjMMNKKf+Lli3qQsybugFxx7Gjo=
 github.com/giantswarm/microerror v0.1.1-0.20200205143715-01b76f66cae6/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
-github.com/giantswarm/micrologger v0.0.0-20200204125826-7578dee0008d h1:z/PBSU+GvhhzGVsZIqDWljR/8NbBmB0V2gDJPzsQfvw=
-github.com/giantswarm/micrologger v0.0.0-20200204125826-7578dee0008d/go.mod h1:/3UZVNMKoO9JUTeiu6Qr0/D5WQQ0PpGtcQKk8pT9qRw=
 github.com/giantswarm/micrologger v0.0.0-20200205144836-079154bcae45 h1:wuqW13kKFlEZpmm7VcIL9zew6uqFXk+fk1XbnDL8t8k=
 github.com/giantswarm/micrologger v0.0.0-20200205144836-079154bcae45/go.mod h1:QJfaltttYGSmImneAb8OYjT7s2E0v5XSwnMKk2lDav0=
 github.com/globalsign/mgo v0.0.0-20180905125535-1ca0a4f7cbcb/go.mod h1:xkRDCp4j0OGD1HRkm4kmhM+pmpv3AKq5SU7GMg4oO/Q=
@@ -401,9 +397,8 @@ k8s.io/apimachinery v0.16.4/go.mod h1:llRdnznGEAqC3DcNm6yEj472xaFVfLM7hnYofMb12t
 k8s.io/apiserver v0.0.0-20190918160949-bfa5e2e684ad/go.mod h1:XPCXEwhjaFN29a8NldXA901ElnKeKLrLtREO9ZhFyhg=
 k8s.io/apiserver v0.16.4/go.mod h1:kbLJOak655g6W7C+muqu1F76u9wnEycfKMqbVaXIdAc=
 k8s.io/client-go v0.0.0-20190918160344-1fbdaa4c8d90/go.mod h1:J69/JveO6XESwVgG53q3Uz5OSfgsv4uxpScmmyYOOlk=
+k8s.io/client-go v0.16.4 h1:sf+FEZXYhJNjpTZapQDLvvN+0kBeUTxCYxlXcVdhv2E=
 k8s.io/client-go v0.16.4/go.mod h1:ZgxhFDxSnoKY0J0U2/Y1C8obKDdlhGPZwA7oHH863Ok=
-k8s.io/client-go v11.0.0+incompatible h1:LBbX2+lOwY9flffWlJM7f1Ct8V2SRNiMRDFeiwnJo9o=
-k8s.io/client-go v11.0.0+incompatible/go.mod h1:7vJpHMYJwNQCWgzmNV+VYUl1zCObLyodBc8nIyt8L5s=
 k8s.io/code-generator v0.0.0-20190912054826-cd179ad6a269/go.mod h1:V5BD6M4CyaN5m+VthcclXWsVcT1Hu+glwa1bi3MIsyE=
 k8s.io/code-generator v0.16.4/go.mod h1:mJUgkl06XV4kstAnLHAIzJPVCOzVR+ZcfPIv4fUsFCY=
 k8s.io/component-base v0.0.0-20190918160511-547f6c5d7090/go.mod h1:933PBGtQFJky3TEwYx4aEPZ4IxqhWh3R6DCmzqIn1hA=
