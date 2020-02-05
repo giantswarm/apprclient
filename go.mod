@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
-	github.com/docker/spdystream v0.0.0-20181023171402-6480d4af844c // indirect
 	github.com/fortytw2/leaktest v1.3.0 // indirect
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32 // indirect
 	github.com/giantswarm/apiextensions v0.0.0-20191209114846-a4fd7939e26e // indirect
