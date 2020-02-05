@@ -11,14 +11,13 @@ require (
 	github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192
 	github.com/giantswarm/k8sclient v0.0.0-20191209120459-6cb127468cd6
 	github.com/giantswarm/k8sportforward v0.0.0-20191209104600-676e7106283c
-	github.com/giantswarm/microerror v0.0.0-20191011121515-e0ebc4ecf5a5
-	github.com/giantswarm/micrologger v0.0.0-20191014091141-d866337f7393
+	github.com/giantswarm/microerror v0.1.1-0.20200204123133-8f12df8fee02
+	github.com/giantswarm/micrologger v0.0.0-20200204125826-7578dee0008d
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/imdario/mergo v0.3.8 // indirect
-	github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53 // indirect
 	github.com/spf13/afero v1.2.2
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413 // indirect
 	golang.org/x/net v0.0.0-20191207000613-e7e4b65ae663 // indirect
