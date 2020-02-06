@@ -14,7 +14,6 @@ require (
 	github.com/giantswarm/micrologger v0.0.0-20200205144836-079154bcae45
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
-	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/imdario/mergo v0.3.8 // indirect
 	github.com/spf13/afero v1.2.2
@@ -26,8 +25,8 @@ require (
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/yaml.v2 v2.2.7 // indirect
-	k8s.io/api v0.16.4
-	k8s.io/apiextensions-apiserver v0.16.4 // indirect
-	k8s.io/apimachinery v0.16.4
+	k8s.io/api v0.16.6
+	k8s.io/apiextensions-apiserver v0.16.6 // indirect
+	k8s.io/apimachinery v0.16.6
 	sigs.k8s.io/controller-runtime v0.4.0 // indirect
 )
