@@ -10,12 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/giantswarm/apprclient"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8sportforward"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/apprclient"
 )
 
 func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
