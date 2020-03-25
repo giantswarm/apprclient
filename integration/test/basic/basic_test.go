@@ -87,7 +87,7 @@ func Test_Client_GetReleaseVersion(t *testing.T) {
 	a, tunnel := testSetup(ctx, t)
 	defer testTeardown(ctx, a, tunnel, t)
 
-	err = a.PushChartTarball(ctx, "tb-chart", "5.5.5", "/e2e/fixtures/tb-chart.tar.gz")
+	err = a.PushChartTarball(ctx, "tb-chart", "5.5.5", "fixtures/tb-chart.tar.gz")
 	if err != nil {
 		t.Fatalf("could not push tarball %v", err)
 	}
