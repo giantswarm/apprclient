@@ -43,14 +43,21 @@ func Test_GetReleaseVersion(t *testing.T) {
 					return
 				}
 				w.Header().Set("Content-Type", "application/json")
-				w.Write(js)
+				_, err = w.Write(js)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
 			},
 			expectedRelease: "3.2.1",
 		},
 		{
 			description: "wrongly formated response",
 			h: func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte("not json"))
+				_, err := w.Write([]byte("not json"))
+				if err != nil {
+					panic(err)
+				}
 			},
 			expectedError: true,
 		},
@@ -58,7 +65,6 @@ func Test_GetReleaseVersion(t *testing.T) {
 			description: "server error",
 			h: func(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "500!!", http.StatusInternalServerError)
-				return
 			},
 			expectedError: true,
 		},
@@ -124,7 +130,11 @@ func Test_PullTarball(t *testing.T) {
 						return
 					}
 					w.Header().Set("Content-Type", "application/json")
-					w.Write(js)
+					_, err = w.Write(js)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
 
 					return
 				}
@@ -136,7 +146,11 @@ func Test_PullTarball(t *testing.T) {
 				}
 
 				w.Header().Set("Content-Type", "application/gzip")
-				w.Write([]byte("myfilecontent"))
+				_, err := w.Write([]byte("myfilecontent"))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
 			},
 			expectedFileContent: "myfilecontent",
 		},
@@ -144,7 +158,6 @@ func Test_PullTarball(t *testing.T) {
 			description: "server error",
 			h: func(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "500!!", http.StatusInternalServerError)
-				return
 			},
 			expectedError: true,
 		},
