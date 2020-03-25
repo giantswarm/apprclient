@@ -121,7 +121,6 @@ func (c *Client) GetReleaseVersion(ctx context.Context, name, channel string) (s
 
 	var ch cnrChannel
 	err = c.do(ctx, req, &ch)
-
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -263,7 +262,7 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) error
 
 		return nil
 	}
-	b := backoff.NewExponential(backoff.ShortMaxWait, backoff.ShortMaxInterval)
+	b := backoff.NewMaxRetries(3, 1*time.Second)
 	n := backoff.NewNotifier(c.logger, ctx)
 
 	err := backoff.RetryNotify(o, b, n)
