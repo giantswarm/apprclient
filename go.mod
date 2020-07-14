@@ -3,7 +3,6 @@ module github.com/giantswarm/apprclient
 go 1.13
 
 require (
-	github.com/giantswarm/apiextensions v0.4.14-0.20200714152258-d202c698cf21 // indirect
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/k8sclient/v3 v3.1.2-0.20200714162319-da5f60c453e3
 	github.com/giantswarm/k8sportforward v0.2.0
