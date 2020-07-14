@@ -117,7 +117,7 @@ func waitForPod() (string, error) {
 			FieldSelector: "status.phase=Running",
 			LabelSelector: "app=cnr-server",
 		}
-		pods, err := config.CPK8sClients.K8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
+		pods, err := config.CPK8sClients.K8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(context.TODO(), lo)
 		if err != nil {
 			return microerror.Mask(err)
 		}
