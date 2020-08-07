@@ -1,6 +1,6 @@
 module github.com/giantswarm/apprclient/v2
 
-go 1.13
+go 1.14
 
 require (
 	github.com/giantswarm/backoff v0.2.0
