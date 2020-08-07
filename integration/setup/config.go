@@ -7,7 +7,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
-	"github.com/giantswarm/apprclient/integration/env"
+	"github.com/giantswarm/apprclient/v2/integration/env"
 )
 
 const (
