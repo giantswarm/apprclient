@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/giantswarm/apprclient/integration/setup"
+	"github.com/giantswarm/apprclient/v2/integration/setup"
 )
 
 var (

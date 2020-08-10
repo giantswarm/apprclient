@@ -11,12 +11,12 @@ import (
 	"time"
 
 	"github.com/giantswarm/backoff"
-	"github.com/giantswarm/k8sportforward"
+	"github.com/giantswarm/k8sportforward/v2"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/apprclient"
+	"github.com/giantswarm/apprclient/v2"
 )
 
 func testSetup(ctx context.Context, t *testing.T) (*apprclient.Client, *k8sportforward.Tunnel) {
@@ -117,7 +117,7 @@ func waitForPod() (string, error) {
 			FieldSelector: "status.phase=Running",
 			LabelSelector: "app=cnr-server",
 		}
-		pods, err := config.CPK8sClients.K8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(lo)
+		pods, err := config.CPK8sClients.K8sClient().CoreV1().Pods(metav1.NamespaceDefault).List(context.TODO(), lo)
 		if err != nil {
 			return microerror.Mask(err)
 		}

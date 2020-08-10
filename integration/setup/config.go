@@ -3,11 +3,11 @@
 package setup
 
 import (
-	"github.com/giantswarm/k8sclient"
+	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
-	"github.com/giantswarm/apprclient/integration/env"
+	"github.com/giantswarm/apprclient/v2/integration/env"
 )
 
 const (

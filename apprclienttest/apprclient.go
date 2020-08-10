@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/giantswarm/apprclient"
+	"github.com/giantswarm/apprclient/v2"
 )
 
 type Config struct {
