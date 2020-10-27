@@ -12,3 +12,5 @@ require (
 	k8s.io/api v0.18.9
 	k8s.io/apimachinery v0.18.9
 )
+
+replace sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.10-gs
